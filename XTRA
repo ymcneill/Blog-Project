@@ -1,0 +1,120 @@
+(index.html.erb)
+<table class="table">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Blog entry</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @posts.each do |post| %>
+      <tr>
+        <td><%= post.title %></td>
+        <td><%= post.author %></td>
+        <td><%= post.blog_entry %></td>
+        <td><%= link_to 'Show', post, class: "btn btn-primary" %></td>
+        <td><%= link_to 'Edit', edit_post_path(post), class: "btn btn-warning" %></td>
+        <td><%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+(_form.html.erb views> comments)
+<%= form_with(model: comment, local: true) do |form| %>
+  <% if comment.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
+
+      <ul>
+      <% comment.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :author %>
+    <%= form.text_field :author %>
+  </div>
+
+  <div class="field">
+    <%= form.label :comment_entry %>
+    <%= form.text_area :comment_entry %>
+  </div>
+
+  <div class="field">
+    <%= form.hidden_field :post_id, value: @post.id %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
+
+
+
+(_form.html.erb views> posts)
+<%= form_with(model: post, local: true) do |form| %>
+  <% if post.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(post.errors.count, "error") %> prohibited this post from being saved:</h2>
+
+      <ul>
+      <% post.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :title %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div class="field">
+    <%= form.label :author %>
+    <%= form.text_field :author %>
+  </div>
+
+  <div class="field">
+    <%= form.label :blog_entry %>
+    <%= form.text_area :blog_entry %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
+
+
+
+(app controller.erb)
+class ApplicationController < ActionController::Base
+  protect_from_forgery with: :exception
+
+  before_action :authenticate_user!
+end
+
+
+(app.html.erb)
+<div class="container">
+  <div class="pull-right">
+    <% if user_signed_in? %>
+      <%= link_to "Sign Out", destroy_user_session_path, method: :delete, class: "btn btn-danger" %>
+    <% end %>
+  </div>
+
+
+  <div class="pull-right">
+  <% if user_signed_in? %>
+   <%= link_to "Edit Profile", edit_user_registration_path, class: "btn btn-primary" %> 
+   <%= link_to "Sign Out", destroy_user_session_path, method: :delete, class: "btn btn-danger" %>
+  <% end %>
+</div>
